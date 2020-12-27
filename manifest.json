@@ -1,0 +1,20 @@
+{
+  "short_name": "SISTAMAS",
+  "name": "SISTAMAS",
+  "icons": [
+    {
+      "src": "assets-front/images/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets-front/images/logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "https://sistamas.id",
+  "background_color": "#F4EBCD",
+  "display": "standalone",
+  "theme_color": "#ffffe0"
+}
