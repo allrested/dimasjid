@@ -1866,7 +1866,7 @@ body {
 	#top-nav .user-profile .user-icon-m {
 		display: block !important;
 		font-size: 20px;
-		margin-right: 10px;
+		margin: 10px;
 	}
 
 	#top-nav .nav-search-input {

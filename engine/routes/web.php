@@ -50,6 +50,8 @@ Route::middleware('auth')->prefix('admin')->group(function(){
         Route::resource('penerimaan', 'Admin\Anggaran\PenerimaanController');
         Route::resource('pengeluaran', 'Admin\Anggaran\PengeluaranController');
         Route::resource('saldo', 'Admin\Anggaran\SaldoController');
+        Route::post('saldo-neraca', 'Admin\Anggaran\SaldoController@printNeraca')->name('saldo.neraca');
+        Route::post('saldo-all', 'Admin\Anggaran\SaldoController@getAll')->name('saldo.all');
     });
 
     // Master

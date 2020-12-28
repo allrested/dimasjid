@@ -85,8 +85,8 @@
             <nav id="top-nav">
                 <div class="sideNavToggle"><i class="dripicons-align-justify"></i></div>
                 <a class="logo-mobile" href="{{ url('/admin')}}"><img src="{{ asset('assets-front') }}/images/logo.png"
-                        alt="Logo"> SISTAMAS</a>
-                <div class="user-profile dropdown show">
+                        alt="Logo"></a>
+                <div margin-top="1%" class="user-profile dropdown show">
                     <a class="dropdown-toggle" href="index.html#" data-display="static" data-toggle="dropdown"
                         role="button" aria-haspopup="true" aria-expanded="false">
                         <img src="{{asset('assets-back')}}/img/dummy-pic.png" alt="User image">

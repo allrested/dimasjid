@@ -10,33 +10,6 @@
     <script src="{{ asset('assets-back') }}/js/jquery.mask.min.js"></script>
     <script src="{{ asset('assets-back') }}/js/terbilang.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            
-            $('.pilihan').select2({
-                theme: "bootstrap",
-                maximumSelectionSize: 6,
-                containerCssClass: ':all:',
-                "language": {
-                    "noResults": function(){
-                        return "Tidak Ditemukan";
-                    }
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                }
-            });
-
-            $('.datepicker').daterangepicker({
-                autoUpdateInput: true,
-                autoApply: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                locale: { format: "YYYY-MM-DD HH:mm:ss" },
-                singleDatePicker: true
-            });
-            
-        });
-
         function inputTerbilang() {
             //membuat inputan otomatis jadi mata uang
             $('.mata-uang').mask('000.000.000.000.000', {reverse: true});
@@ -69,8 +42,37 @@
     <div class="card-box pr-0 pl-0">
         <div class="card-body">
             <div class="main-table-card col-md-12 m-b-30">
+            <form action="{{ route('anggaran.saldo.neraca') }}" id="frmFilter" method="post">
+                    @csrf
+                    <input type="hidden" name="is_pdf" value="0" id="is_pdf">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tahun">Tahun</label>
+                                <select id="tahun" class="pilihan form-control" name="tahun">
+                                    <option value="">Semua Data</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-1">
+                            <a href="#" class="btn btn-info btn-icon icon-left btnFilter" style="margin-top:24px">
+                                <i class="entypo-search"></i>
+                                Filter
+                            </a>
+                        </div>
+                        <div class="col-md-1">
+                                <button type="submit" class="btn btn-secondary buttons-excel buttons-html5 mb-3"  style="margin-top:24px"><span>Excel</span></button>
+                        </div>
+                        <div class="col-md-1">
+                                <button type="button" class="btn btn-danger btn-pdf buttons-html5 mb-3"  style="margin-top:24px"><span>PDF</span></button>
+                        </div>
+                    </div>
+                </form>
                 <div class="main-t-table table-responsive">
-                    <table class="table display" id="data-table">
+                    <table class="table display" id="ajax-table">
                         <thead>
                             <th scope="col">Tanggal</th> 
                             <th scope="col">Kode Rekening</th>                            
@@ -78,36 +80,6 @@
                             <th scope="col">Keterangan</th>                         
                             <th scope="col">Aksi</th>
                         </thead>
-                        <tbody>
-                            @foreach ($anggaran as $item)
-                            <tr>
-                                <td>{{$item->created_at->isoFormat('LL')}}</td> 
-                                <td>{{$item->accounts->kode}}</td> 
-                                <td>{{number_format($item->jumlah, 0)}}</td>                               
-                                <td>
-                                    @if (is_null($item->deskripsi))
-                                        -
-                                    @else
-                                        {{$item->deskripsi}}
-                                    @endif                                    
-                                </td>
-                                <td>
-                                    <a href="#" class="btn btn-primary btnEdit" title="Edit" data-id="{{$item->id}}"><i
-                                            class="dripicons-pencil"></i></button>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btnDelete" data-toggle="tooltip"
-                                        data-placement="top" title="Delete" data-id="{{$item->id}}"><i
-                                            class="dripicons-trash"></i></button>
-                                    </a>
-                                    <form action="{{route('anggaran.saldo.destroy',$item->id)}}"
-                                        method="post" class="d-none" id="formDelete-{{$item->id}}">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                 </div>
             </div>
@@ -191,8 +163,71 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
+        initDatatable();
+        $('.pilihan').select2({
+            theme: "bootstrap",
+            maximumSelectionSize: 6,
+            containerCssClass: ':all:',
+            "language": {
+                "noResults": function(){
+                    return "Tidak Ditemukan";
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
 
+        $('.datepicker').daterangepicker({
+            autoUpdateInput: true,
+            autoApply: true,
+            timePicker: true,
+            timePicker24Hour: true,
+            locale: { format: "YYYY-MM-DD HH:mm:ss" },
+            singleDatePicker: true
+        });
+
+        function initDatatable(){
+            var formData = $('#frmFilter').serializeArray();
+            var data = { };
+            $.each(formData, function() {
+                data[this.name] = this.value;
+            });
+            
+            $('#ajax-table').DataTable().clear().destroy();
+            myTable = $('#ajax-table').DataTable({
+                processing: true,
+                responsive: true,
+                serverSide: true,
+                ajax: {
+                        "headers" : {
+                            'X-CSRF-TOKEN': "{{csrf_token()}}"
+                        },
+                        "url": "{{ url('admin/anggaran/saldo-all') }}",
+                        "type": "POST",
+                        "data": data
+                    },
+                
+                columns: [
+                    {"data" : "created_at"},
+                    {"data" : "kode"},
+                    {"data" : "jumlah"},
+                    {"data" : "deskripsi"},
+                    {"data" : "action"},
+                ]
+            });
+        }
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.btnFilter').on('click',function(){
+            $('.loader').show();
+            initDatatable();
+            $('.loader').hide();
+        });
+        $('.btn-pdf').on('click',function(){
+            $('#is_pdf').val(1);
+            $('#frmFilter').submit();
+        });
         $('.btnAdd').on('click', function (e) {
             $('#frmAdd').attr('action',"{{route('anggaran.saldo.store')}}");
             $('#frmAdd').append('<div id="method"></div>');
@@ -229,25 +264,39 @@
                 $('#createLaporanModal').modal('show');
         });
 
-        $('.btnDelete').on('click', function (e) {
-            var id = $(this).data('id');
-            e.preventDefault();
-            var parent = $(this).parent();
-
-            Swal.fire({
-                title: 'Apa anda yakin?',
-                text: "Data akan dihapus",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus!'
-            }).then((result) => {
-                if (result.value) {
-                    $("#formDelete-" + id).submit();
-                }
-            })
-        });
+        $(document).on('click','.btnDelete', function () {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Apa anda yakin?',
+                    text: "Data akan dihapus",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!'
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "post",
+                            url: "{{ url('admin/anggaran/saldo') }}/"+id,
+                            data: {
+                                '_token' : '{{ csrf_token() }}',
+                                '_method' : 'DELETE',
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                if(response == 1){
+                                    initDatatable();
+                                    Swal.fire('Data terhapus!', {
+                                    icon: 'success',
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            });
     });
 
 </script>

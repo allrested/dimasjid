@@ -162,7 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Silber\Bouncer\BouncerServiceProvider::class,
-
+        App\Providers\PHPExcelMacroServiceProvider::class,
         /*
          * Package Service Providers...
          */

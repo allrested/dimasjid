@@ -76,23 +76,15 @@
 <section class="section pt-0 mb-0">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d75363.69880844012!2d107.59833380323393!3d-6.912530234988699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C+Bandung+City%2C+West+Java!5e0!3m2!1sen!2sid!4v1565311436216!5m2!1sen!2sid"
-                    width="550" height="350" frameborder="0" style="border:0" allowfullscreen></iframe>
-            </div>
-            <!--end col-->
 
-            <div class="col-lg-6">
-                <div class="section-title ml-lg-4">
-                    <h4 class="title mb-4">Informasi <span class="text-primary"> Aplikasi
-                        </span></h4>
-                    <p class="text-muted text-justify">SISTAMAS adalah sebuah aplikasi
-                        berbasis web
-                        yang dapat mengelola sistem keuangan masjid.
+            <div class="section-title ml-lg-4">
+                <h4 class="title mb-4">Informasi <span class="text-primary"> Aplikasi
+                    </span></h4>
+                <p class="text-muted text-justify">SISTAMAS adalah sebuah aplikasi
+                    berbasis web
+                    yang dapat mengelola sistem keuangan masjid.
 
-                    </p>
-                </div>
+                </p>
             </div>
             <!--end col-->
         </div>
@@ -219,10 +211,6 @@
         <div class="mt-4 text-center">
             <a href="{{url('agenda')}}" class="btn btn-primary mt-2 mouse-down">Selengkapnya</a>
         </div>
-    </div>
-    <!--end col-->
-    </div>
-    <!--end row-->
     </div>
     <!--end container-->
 </section>
