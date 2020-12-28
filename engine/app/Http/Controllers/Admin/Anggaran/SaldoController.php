@@ -53,6 +53,12 @@ class SaldoController extends Controller
             }else{
                 return $row->deskripsi;
             }
+        })->editColumn('jumlah',function($row){
+            if(empty($row->jumlah)){
+                return 0;
+            }else{
+                return number_format($row->jumlah, 2);
+            }
         })->editColumn('kode',function($row){
             if(is_null($row->accounts)){
                 return "-";
