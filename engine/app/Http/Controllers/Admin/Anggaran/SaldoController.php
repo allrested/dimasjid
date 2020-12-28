@@ -57,7 +57,7 @@ class SaldoController extends Controller
             if(empty($row->jumlah)){
                 return 0;
             }else{
-                return number_format($row->jumlah, 2);
+                return number_format($row->jumlah, 0);
             }
         })->editColumn('kode',function($row){
             if(is_null($row->accounts)){

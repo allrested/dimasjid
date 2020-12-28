@@ -196,6 +196,9 @@
             
             $('#ajax-table').DataTable().clear().destroy();
             myTable = $('#ajax-table').DataTable({
+                "language": {
+                    "url": "/assets-back/js/DataTables/Indonesian.json"
+                },
                 processing: true,
                 responsive: true,
                 serverSide: true,
