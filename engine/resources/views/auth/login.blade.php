@@ -57,6 +57,9 @@
 						<div class="login-form-footer">
 							<a href="{{ url('forgot_pass') }}">Lupa Kata Sandi?</a>
 							<input type="submit" class="logbtn" value="Masuk">
+						</div>
+						<div class="login-form-footer">
+							<a href="{{ url('layanan') }}">Klik disini untuk mendaftarkan akun</a>
 						</div>						
 					</form>
 				</div>

@@ -20,6 +20,7 @@
     </div>
 
 </div><!-- end #content-header -->
+@include('include.alert')
 <div id="main-content">
     <div class="team-tablist-content tab-content">
         <div role="tabpanel" class="tab-pane active" id="d-tables">
@@ -109,7 +110,7 @@
             var parent = $(this).parent();
 
             Swal.fire({
-                title: 'Apa anda yakin?',
+                title: 'Apakah anda yakin?',
                 text: "Data akan dihapus",
                 icon: 'warning',
                 showCancelButton: true,
@@ -129,13 +130,13 @@
             var parent = $(this).parent();
 
             Swal.fire({
-                title: 'Apa anda yakin?',
+                title: 'Apakah anda yakin?',
                 text: "Akun akan divalidasi",
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya!'
+                confirmButtonText: 'Ya'
             }).then((result) => {
                 if (result.value) {
                     $("#formActive-" + id).submit();

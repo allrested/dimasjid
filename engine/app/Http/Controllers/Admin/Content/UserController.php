@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 
 
 class UserController extends Controller
@@ -102,16 +103,18 @@ class UserController extends Controller
         $to_name = $user->name;
         $to_email = $user->email;
         $masjid = $user->is_superuser;
-        $data = array("title"=>"Pendaftaran Masjid Berhasil!", "information" => "Akun anda sudah terdaftar di sistamas","body" => "Untuk masuk silahkan menggunakan username: $to_email dan password: SISTAMAS");
-        $user->update(['is_active' => 1]);
+        $password = str_random(8);
+        $data = array("title"=>"Pendaftaran Berhasil!", "information" => "Terima Kasih! Akun anda sudah terdaftar di aplikasi SISTAMAS","body" => "<p>Berikut informasi mengenai akun anda: <br> username: <b>$to_email</b> <br> password: <b>$password</b> <br><br></p><p align='center'>Mohon anda menjaga kerahasiaan informasi akun anda!</p>");
+        $password = Hash::make($password);
+        $user->update(['is_active' => 1, 'password' => $password]);
         Masjid::find($masjid)->update(['status' => 1]);
         try {
             Mail::send('email', $data, function ($m) use ($to_name, $to_email) {
                 $m->from('hello@sistamas.id', 'SISTAMAS');
-                $m->to($to_email, $to_name)->subject('Verifikasi Akun di SISTAMAS');
+                $m->to($to_email, $to_name)->subject('Selamat datang di SISTAMAS');
             });       
             return redirect()->back()->with('info', 'Akun Berhasil Divalidasi!');
-         } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return redirect()->back()->with('info', 'Akun Berhasil Divalidasi, namun email gagal terkirim!');
          }
     }
