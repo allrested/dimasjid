@@ -10,7 +10,7 @@
 @endpush
 @section('content')
 <h3 class="text-center">Laporan Operasional</h3>
-<h4 class="text-center">{{ $masjid }}</h4>
+<h4 class="text-center">{{ $masjid->nama }}</h4>
 <h5 class="text-center">{{ $filters }}</h5>
 <table class="table table-bordered table-striped"  id="tabel">
     <thead>

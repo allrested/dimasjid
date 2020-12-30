@@ -53,25 +53,37 @@
                                     <td>{{ $masjid }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-                                        @if ($user->role == 1)
-                                            <span class="btn btn-primary">{{ $user->roles->name }}</span>
-                                        @elseif ($user->role == 2)
-                                            <span class="btn btn-secondary">{{ $user->roles->name }}</span>
+                                        @if ($user->is_active == 1)
+                                            @if ($user->role == 1)
+                                                <span class="btn btn-primary">{{ $user->roles->name }}</span>
+                                            @elseif ($user->role == 2)
+                                                <span class="btn btn-secondary">{{ $user->roles->name }}</span>
+                                            @else
+                                                <span class="btn btn-info">{{ $user->roles->name }}</span>
+                                            @endif
                                         @else
-                                            <span class="btn btn-info">{{ $user->roles->name }}</span>
+                                            <a href="#">
+                                                <button type="button" class="btn btn-danger btnActive" data-id="{{$user->id}}" data-toggle="tooltip" data-placement="top" title="Aktifkan" >Aktivasi</button>
+                                            </a>
+                                            <form action="{{route('users.active')}}" method="POST"
+                                            class="d-none" id="formActive-{{$user->id}}">
+                                                <input type="hidden" name="id" value="{{$user->id}}">
+                                                @csrf
+                                                @method('POST')
+                                            </form>
                                         @endif
                                     </td>
                                     <td>
                                         <a href="{{ route('users.edit',$user->id)}}">
-                                            <button type="button" class="btn btn-warning"data-toggle="tooltip" data-placement="top" title="Edit" ><i
+                                            <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Edit" ><i
                                                     class="dripicons-pencil"></i></button>
                                         </a>
                                         <a href="{{ route('users.destroy',$user)}}">
-                                            <button type="button" class="btn btn-danger btnDelete" data-toggle="tooltip" data-placement="top" title="Delete"><i
+                                            <button type="button" class="btn btn-danger btnDelete" data-id="{{$user->id}}" data-toggle="tooltip" data-placement="top" title="Delete"><i
                                                     class="dripicons-trash"></i></button>
                                         </a>
                                         <form action="{{route('users.destroy',$user)}}" method="POST"
-                                            class="formDelete d-none">
+                                        class="d-none" id="formDelete-{{$user->id}}">
                                             @csrf
                                             @method('DELETE')
                                         </form>
@@ -92,21 +104,43 @@
         $('[data-toggle="tooltip"]').tooltip();
 
         $('.btnDelete').on('click', function (e) {
+            var id = $(this).data('id');
             e.preventDefault();
             var parent = $(this).parent();
 
-            swal({
-                    title: "Apa anda yakin?",
-                    text: "Data akan terhapus",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then(function (willDelete) {
-                    if (willDelete) {
-                        $(".formDelete").submit();
-                    }
-                });
+            Swal.fire({
+                title: 'Apa anda yakin?',
+                text: "Data akan dihapus",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!'
+            }).then((result) => {
+                if (result.value) {
+                    $("#formDelete-" + id).submit();
+                }
+            })
+        });
+
+        $('.btnActive').on('click', function (e) {
+            var id = $(this).data('id');
+            e.preventDefault();
+            var parent = $(this).parent();
+
+            Swal.fire({
+                title: 'Apa anda yakin?',
+                text: "Akun akan divalidasi",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya!'
+            }).then((result) => {
+                if (result.value) {
+                    $("#formActive-" + id).submit();
+                }
+            })
         });
     });
 

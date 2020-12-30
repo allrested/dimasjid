@@ -91,7 +91,7 @@
                                             class="dripicons-trash"></i></button>
                                     </a>
                                     <form action="{{route('masjid.destroy',$item->id)}}"
-                                        method="post" class="d-none" id="formDelete-{{$item->id}}">
+                                        method="post" class="d-none" id="formDelete">
                                         @csrf
                                         @method('DELETE')
                                     </form>

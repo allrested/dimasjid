@@ -8,35 +8,68 @@ use App\Models\Akun;
 use App\Models\Anggaran;
 use App\Models\Masjid;
 use Yajra\DataTables\Facades\DataTables;
-use App\Exports\NeracaExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
-use DB;
 
 class SaldoController extends Controller
 {
     public function index()
     {
-        $akun = Akun::where(function ($query) {
-            $query->where('kode', 'NOT LIKE' , "4%")->where('kode', 'NOT LIKE' , "5%");                  
-        })->get();
-        if (auth()->user()->role == 1 ){
-            $masjid = Masjid::all();
-        }else{
-            $masjid = Masjid::where('id',auth()->user()->is_superuser)->get();
-        }
-        return view('admin.anggaran.saldo', compact('akun', 'masjid'));
+        $tahun = Anggaran::selectRaw('EXTRACT(YEAR FROM created_at) as year')->distinct()->get();
+        return view('admin.anggaran.saldo', compact('tahun'));
     }
+
+    public function dataMasjid(Request $request)
+    {
+    	$data = [];
+        $data = Masjid::select("id","nama", "wilayah");
+        if (auth()->user()->role != 1 ){
+            $data = $data->where('id',auth()->user()->is_superuser);
+        }
+        if($request->has('q')){
+            $search = $request->q;
+            $data = $data->where('nama','ILIKE',"%$search%")->get();
+        }else{
+            $data = $data->take('6')->get();
+        }
+        return response()->json($data);
+    }
+
+    public function dataAkun(Request $request)
+    {
+    	$data = [];
+        $data = Akun::select("id","kode","nama");
+        $data = $data->where(function ($query) {
+            $query->where('kode', 'NOT LIKE' , "4%")->where('kode', 'NOT LIKE' , "5%");                  
+        });
+        if($request->has('q')){
+            $search = $request->q;
+            $data = $data->where(function ($query) use ($search) {
+                $query->where('kode','ILIKE',"$search%")->orWhere('nama','ILIKE',"%$search%");                  
+            });
+        }
+        $data = $data->orderby('kode')->get();
+        return response()->json($data);
+    }
+
     public function getAll(Request $request){
         $anggaran = Anggaran::select();
-        $anggaran->whereNull('deleted_at')->whereHas('accounts', function (Builder $query) {
+        $anggaran->whereNull('deleted_at');
+        $anggaran->whereHas('accounts', function (Builder $query) {
             $query->where('kode', 'NOT LIKE' , "4%")->where('kode', 'NOT LIKE' , "5%"); 
         });
+        
         if (auth()->user()->role != 1 ){
             $anggaran->where('masjid',auth()->user()->is_superuser);
+        }else{
+            if($request->has('masjid')){
+                $masjid = $request->masjid;
+                if(!empty($masjid)){
+                    $anggaran->where('masjid',$masjid);
+                }
+            }    
         }
-        
+
         if($request->has('tahun')){
             $year = $request->tahun;
             if(!empty($year)){
@@ -45,6 +78,16 @@ class SaldoController extends Controller
         }
         
         return DataTables::of($anggaran)
+        ->filter(function ($query) use ($request) {
+            if ($request->has('search') && ! is_null($request->get('search')['value']) ) {
+                $kode = $request->get('search')['value'];
+                if(!empty($kode)){
+                    return $query->orWhereHas('accounts', function (Builder $q) use($kode)  {
+                        $q->where('kode', 'LIKE' , "%$kode%"); 
+                    });
+                }
+            }
+        }, true)
         ->editColumn('created_at',function($row){
             return \Carbon\Carbon::parse($row->created_at)->isoFormat('LL');
         })->editColumn('deskripsi',function($row){
@@ -110,7 +153,7 @@ class SaldoController extends Controller
 
     public function show($id)
     {
-        $anggaran = Anggaran::find($id);
+        $anggaran = DB::table('anggarans AS saldo')->selectRaw('saldo.*, (SELECT nama||\' - \'||wilayah FROM masjids WHERE masjids.id=masjid) AS nama_masjid, (SELECT kode||\' - \'||nama FROM accounts WHERE accounts.id=account) AS nama_akun')->find($id);
         return response()->json($anggaran);
     }
 
@@ -128,20 +171,6 @@ class SaldoController extends Controller
             return redirect()->back()->with('error','Server error,'.$th->getMessage());
         }
         
-    }
-
-    public function printNeraca(Request $request){
-        $data['filters'] = '';
-        $masjid = 2;
-        $year = \Carbon\Carbon::now()->format('Y');
-        $akun = DB::table('accounts AS acc')->selectRaw("kode, nama, (SELECT COALESCE(SUM(jumlah),0) FROM anggarans LEFT JOIN accounts ON anggarans.account=accounts.id WHERE accounts.kode LIKE acc.kode||'%' AND masjid=$masjid AND EXTRACT(YEAR FROM anggarans.created_at) = '$year') AS jumlah");
-        $data['filters'] .= "Periode ".$year;
-        $data['akun'] = $akun->whereRaw('LENGTH(kode) < 8')->where('kode', 'NOT LIKE' , "4%")->where('kode', 'NOT LIKE' , "5%")->orderBy('kode')->get();
-        $data['masjid'] = 'Masjid Alfurqon'; 
-        if($request->is_pdf == 1){
-            return view('admin.laporan.neraca',$data);
-        }
-        return Excel::download(new NeracaExport($request), "Laporan Neraca Periode $year.xlsx");
     }
 
 }

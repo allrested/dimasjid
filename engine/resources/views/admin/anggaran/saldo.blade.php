@@ -2,7 +2,6 @@
 
 @section('page_title','Saldo Awal')
 @push('custom_script')
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -42,32 +41,59 @@
     <div class="card-box pr-0 pl-0">
         <div class="card-body">
             <div class="main-table-card col-md-12 m-b-30">
-            <form action="{{ route('anggaran.saldo.neraca') }}" id="frmFilter" method="post">
+            <form action="{{ route('anggaran.print') }}" id="frmFilter" method="post">
                     @csrf
                     <input type="hidden" name="is_pdf" value="0" id="is_pdf">
+                    <input type="hidden" name="tipe" value="neraca" id="tipe">
                     <div class="row">
+                        @if (auth()->user()->role == 1 )
                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="masjidFilter">Masjid</label>
+                                <select id="masjidFilter" class="masjid form-control" name="masjid" required>
+                                </select>
+                            </div>
+                        </div>
+                        @else
+                        <input type="hidden" name="masjid" id="masjidFilter" value="{{ Auth()->user()->is_superuser}}">
+                        @endif
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="tahun">Tahun</label>
                                 <select id="tahun" class="pilihan form-control" name="tahun">
                                     <option value="">Semua Data</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2021">2021</option>
+                                    @foreach ($tahun as $item)
+                                        <option value="{{ $item->year }}" {{ Request::get('tahun') == $item->year ? 'selected' : ''}}>{{ $item->year }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         
                         <div class="col-md-1">
-                            <a href="#" class="btn btn-info btn-icon icon-left btnFilter" style="margin-top:24px">
+                            <a href="#" class="btn btn-info btn-icon icon-left btnFilter" style="margin-top:32px">
                                 <i class="entypo-search"></i>
                                 Filter
                             </a>
                         </div>
+                        
                         <div class="col-md-1">
-                                <button type="submit" class="btn btn-secondary buttons-excel buttons-html5 mb-3"  style="margin-top:24px"><span>Excel</span></button>
-                        </div>
-                        <div class="col-md-1">
-                                <button type="button" class="btn btn-danger btn-pdf buttons-html5 mb-3"  style="margin-top:24px"><span>PDF</span></button>
+                                <button type="button" role="group" class="btn btn-danger btn-group mb-3 dropdown-toggle"  style="margin-top:32px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Laporan</button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="neraca"><span>Laporan Neraca (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="neraca"><span>Laporan Neraca (PDF)</span></button>
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="operasional"><span>Laporan Operasional (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="operasional"><span>Laporan Operasional (PDF)</span></button>
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="kas"><span>Laporan Arus Kas (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="kas"><span>Laporan Arus Kas (PDF)</span></button>
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="calk"><span>Laporan Calk (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="calk"><span>Laporan Calk (PDF)</span></button>
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="penerimaan"><span>Laporan Kas Penerimaan (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="penerimaan"><span>Laporan Kas Penerimaan (PDF)</span></button>
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="pengeluaran"><span>Laporan Kas Pengeluaran (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="pengeluaran"><span>Laporan Kas Pengeluaran (PDF)</span></button>
+                                    <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="periode"><span>Laporan Kas Harian (xlsx)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="periode"><span>Laporan Kas Harian (PDF)</span></button>
+                                </div>
                         </div>
                     </div>
                 </form>
@@ -112,20 +138,14 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="masjid">Pilih Masjid</label>
-                                    <select name="masjid" class="form-control select2">
-                                        @foreach ($masjid as $item)
-                                            <option value="{{ $item->id }}" {{ @$user->is_superuser == $item->id ? 'selected' : ''}}>{{ $item->wilayah.' - '.$item->nama }}</option>
-                                        @endforeach
+                                    <select name="masjid" class="custom-select" id="masjid" required>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="nama">Kode Rekening</label>
-                                    <select class="pilihan" name="account" id="account">
-                                        @foreach ($akun as $akun)
-                                            <option value="{{$akun->id}}">{{$akun->kode . " - " .$akun->nama}}</option>  
-                                        @endforeach
+                                    <label for="account">Kode Rekening</label>
+                                    <select name="account" class="custom-select" id="account" required>
                                     </select>
                                 </div>
                             </div>
@@ -164,6 +184,7 @@
 <script>
     $(document).ready(function () {
         initDatatable();
+
         $('.pilihan').select2({
             theme: "bootstrap",
             maximumSelectionSize: 6,
@@ -175,6 +196,68 @@
             },
             escapeMarkup: function (markup) {
                 return markup;
+            }
+        });
+
+        $('.masjid').select2({
+            theme: "bootstrap",
+            placeholder: 'Pilih Masjid',
+            maximumSelectionSize: 6,
+            containerCssClass: ':all:',
+            "language": {
+                "noResults": function(){
+                    return "Tidak Ditemukan";
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            ajax: {
+                url: '{{ url("admin/anggaran/saldo-masjid") }}',
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                return {
+                    results:  $.map(data, function (item) {
+                        return {
+                            text: item.nama+" - "+item.wilayah,
+                            id: item.id
+                        }
+                    })
+                };
+                },
+                cache: true
+            }
+        });
+
+        $('#account').select2({
+            theme: "bootstrap",
+            placeholder: 'Pilih Rekening Akun',
+            maximumSelectionSize: 6,
+            containerCssClass: ':all:',
+            "language": {
+                "noResults": function(){
+                    return "Tidak Ditemukan";
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            ajax: {
+                url: '{{ url("admin/anggaran/saldo-akun") }}',
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                return {
+                    results:  $.map(data, function (item) {
+                        return {
+                            text: item.kode+" - "+item.nama,
+                            id: item.id
+                        }
+                    })
+                };
+                },
+                cache: true
             }
         });
 
@@ -213,7 +296,7 @@
                 
                 columns: [
                     {"data" : "created_at"},
-                    {"data" : "kode"},
+                    {"data" : "kode","searchable": false},
                     {"data" : "jumlah"},
                     {"data" : "deskripsi"},
                     {"data" : "action"},
@@ -229,8 +312,26 @@
         });
         $('.btn-pdf').on('click',function(){
             $('#is_pdf').val(1);
+        });
+        $('.buttons-html5').on('click',function(){
+            var tipe = $(this).data('tipe');
+            $('#tipe').val(tipe);
             $('#frmFilter').submit();
         });
+        $('#frmFilter').on('submit',function(){
+            var allIsOk = true;
+            var masjid = $('#masjidFilter').val();
+
+            if(!masjid || masjid == 0){
+                Swal.fire('Pilih Masjid Terlebih dahulu!', {
+                    icon: 'warning',
+                });
+                $('#masjidFilter').focus();
+                allIsOk = false;
+            }
+            return allIsOk;
+        });
+        
         $('.btnAdd').on('click', function (e) {
             $('#frmAdd').attr('action',"{{route('anggaran.saldo.store')}}");
             $('#frmAdd').append('<div id="method"></div>');
@@ -245,7 +346,7 @@
             $('#deskripsi').val('');
             $('#createLaporanModal').modal('show');
         });
-        $('.btnEdit').on('click', function (e) {
+        $(document).on('click','.btnEdit', function (e) {
             var id = $(this).data('id');
                 $('#frmAdd').attr('action','{{ url("admin/anggaran/saldo") }}/'+id);
                 $('#frmAdd').append('<div id="method"></div>');
@@ -255,8 +356,10 @@
                     url: "{{ url('admin/anggaran/saldo') }}/"+id,
                     success: function (response) {
                         $('#created_at').val(response.created_at);
-                        $('#masjid').append(response.masjid).trigger('change');
-                        $('#account').val(response.account).trigger('change');
+                        var opTionMasjid = new Option(response.nama_masjid, response.masjid, true, true);
+                        $('#masjid').append(opTionMasjid).trigger('change');
+                        var optionAkun = new Option(response.nama_akun, response.account, true, true);
+                        $('#account').append(optionAkun).trigger('change');
                         $('#jumlah').val(response.jumlah);
                         $('#terbilang-input').val(response.jumlah);
                         $('#deskripsi').val(response.deskripsi);

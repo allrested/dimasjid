@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="zarko-m">
-    <meta name="description" content="Admin Dashboard">
+    <meta name="author" content="buildme.id">
+    <meta name="description" content="Panel Login">
 
 	<title>Portal SISTAMAS</title>
 
@@ -62,7 +62,7 @@
 				</div>
 				<div class="login-r col-lg-8">
 					<div class="login-message">
-						{{-- <p><span>With </span> you can achieve <span>anything!</span></p> --}}
+						<p><span></span> SISTAMAS <span>Aplikasi Akuntansi Masa Kini</span></p>
 					</div>
 				</div>
 			</div>

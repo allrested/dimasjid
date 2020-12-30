@@ -95,6 +95,27 @@ class UserController extends Controller
         return view('admin.users.form',compact('user','roles', 'masjid'));
     }
 
+    public function active(Request $request)
+    {
+        $id = $request->id;
+        $user = User::find($id);
+        $to_name = $user->name;
+        $to_email = $user->email;
+        $masjid = $user->is_superuser;
+        $data = array("title"=>"Pendaftaran Masjid Berhasil!", "information" => "Akun anda sudah terdaftar di sistamas","body" => "Untuk masuk silahkan menggunakan username: $to_email dan password: SISTAMAS");
+        $user->update(['is_active' => 1]);
+        Masjid::find($masjid)->update(['status' => 1]);
+        try {
+            Mail::send('email', $data, function ($m) use ($to_name, $to_email) {
+                $m->from('hello@sistamas.id', 'SISTAMAS');
+                $m->to($to_email, $to_name)->subject('Verifikasi Akun di SISTAMAS');
+            });       
+            return redirect()->back()->with('info', 'Akun Berhasil Divalidasi!');
+         } catch (\Throwable $th) {
+            return redirect()->back()->with('info', 'Akun Berhasil Divalidasi, namun email gagal terkirim!');
+         }
+    }
+
     /**
      * Update the specified resource in storage.
      *
