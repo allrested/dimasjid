@@ -21,13 +21,13 @@ class PenerimaanController extends Controller
         })->get();
         if (auth()->user()->role == 1 ){
             $anggaran = Anggaran::whereNull('deleted_at')->whereHas('accounts', function (Builder $query) {
-                $query->where('kode', 'NOT LIKE' , "5%")->where('kode', 'NOT LIKE' , "1.1.1.01%"); 
+                $query->whereRaw('LENGTH(kode) > 8')->where('kode', 'NOT LIKE' , "5%")->where('kode', 'NOT LIKE' , "1.1.1.01%"); 
             })->get();
             $masjid = Masjid::all();
         }else{
             $anggaran = Anggaran::whereNull('deleted_at')->where('masjid',auth()->user()->is_superuser)
             ->whereHas('accounts', function (Builder $query) {
-                $query->where('kode', 'NOT LIKE' , "5%")->where('kode', 'NOT LIKE' , "1.1.1.01%"); 
+                $query->whereRaw('LENGTH(kode) > 8')->where('kode', 'NOT LIKE' , "5%")->where('kode', 'NOT LIKE' , "1.1.1.01%"); 
             })->get();
             $masjid = Masjid::where('id',auth()->user()->is_superuser)->get();
         }
