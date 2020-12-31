@@ -117,7 +117,7 @@
     var chartData = {
     labels: [ "Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"],
     datasets: [{
-        data: [589, 445, 483, 503, 689, 692, 634],
+        data: [589, 445, 483, 503],
         backgroundColor: 'transparent',
         borderColor: colorSaldo[0],
         borderWidth: 4,
@@ -125,7 +125,7 @@
          label: "Pengeluaran"
     },
        {
-         data: [639, 465, 493, 478, 589, 632, 674],
+         data: [639, 465, 493, 478],
          backgroundColor: colors[3],
          borderColor: colorSaldo[1],
          borderWidth: 4,
@@ -165,7 +165,7 @@
             {
             backgroundColor: [colors[1],colors[0],colors[2],colors[5]],
             borderWidth: 0,
-            data: [5000000, 2000000, 1400000]
+            data: [5400000, 3500000, 1500000]
             }
         ]
         },
@@ -192,7 +192,7 @@
             {
             backgroundColor: [colors[1],colors[0],colors[2],colors[5]],
             borderWidth: 0,
-            data: [3500000, 2005000, 1000000]
+            data: [2000000, 1500000, 650000]
             }
         ]
         },

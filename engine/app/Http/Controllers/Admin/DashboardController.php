@@ -22,10 +22,10 @@ class DashboardController extends Controller
             $data['c_berita'] = Berita::count();
             $data['c_masjid'] = Masjid::where('status',1)->get()->count();
             $data['c_penerimaan'] = Anggaran::whereNull('deleted_at')->whereHas('accounts', function (Builder $query) {
-                $query->where('status', '=' , 1); 
+                $query->where('kode', 'NOT LIKE' , "5%")->where('kode', 'NOT LIKE' , "1.1.1.01%");   
             })->get()->sum('jumlah');
             $data['c_pengeluaran'] = Anggaran::whereNull('deleted_at')->whereHas('accounts', function (Builder $query) {
-                $query->where('status', '=' , 2); 
+                $query->where('kode', 'LIKE' , "5%"); 
             })->get()->sum('jumlah');
             $data['c_user'] = User::where('is_active',1)->get()->count();
             $data['announces'] = Announce::all();
@@ -35,10 +35,10 @@ class DashboardController extends Controller
             $data['c_berita'] = Berita::count();
             $data['c_announce'] = Announce::count();
             $data['c_penerimaan'] = Anggaran::whereNull('deleted_at')->where('masjid',auth()->user()->is_superuser)->whereHas('accounts', function (Builder $query) {
-                $query->where('status', '=' , 1); 
+                $query->where('kode', 'NOT LIKE' , "5%")->where('kode', 'NOT LIKE' , "1.1.1.01%");  
             })->get()->sum('jumlah');
             $data['c_pengeluaran'] = Anggaran::whereNull('deleted_at')->where('masjid',auth()->user()->is_superuser)->whereHas('accounts', function (Builder $query) {
-                $query->where('status', '=' , 2); 
+                $query->where('kode', 'LIKE' , "5%");
             })->get()->sum('jumlah');
             $data['c_user'] = User::where('is_active',1)->where('is_superuser',auth()->user()->is_superuser)->get()->count();
             $data['announces'] = Announce::all();

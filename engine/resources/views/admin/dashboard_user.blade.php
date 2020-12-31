@@ -113,7 +113,7 @@
         var chartData = {
             labels: [ "Januari", "Februari", "Maret", "April", "Mei", "Jeni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
             datasets: [{
-                data: [1100000, 1200000, 1400000, 1600000, 1700000, 1800000, 1900000, 2100000, 2200000, 2600000, 2800000, 3000000],
+                data: [1100000, 1200000, 1400000, 1600000, 1700000, 1800000, 1900000, 2100000, 2200000, 2500000, 3000000, 4150000],
                 backgroundColor: 'transparent',
                 borderColor: colorSaldo[0],
                 borderWidth: 4,
@@ -121,7 +121,7 @@
                 label: "Pengeluaran"
             },
             {
-                data: [1100000, 1200000, 1400000, 1600000, 1700000, 1800000, 1900000, 2100000, 3000000, 3500000, 4000000, 5000000],
+                data: [100000, 500000, 1000000, 1500000, 2000000, 3500000, 4000000, 5000000, 7000000, 8000000, 9000000, 10400000],
                 backgroundColor: colors[3],
                 borderColor: colorSaldo[1],
                 borderWidth: 4,
