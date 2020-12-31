@@ -74,9 +74,9 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Kode Masjid <span class="text-danger">*</span></label>
+                                            <label>Kode Masjid</label>
                                             <input type="text" name="kode" id="kode" class="form-control" style="font-size:large"
-                                                class="validate-required" required />
+                                                class="validate-required" />
                                         </div>
                                     </div>
 

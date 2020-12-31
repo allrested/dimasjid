@@ -83,6 +83,7 @@
                                     <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="neraca"><span>Laporan Neraca (PDF)</span></button>
                                     <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="operasional"><span>Laporan Operasional (xlsx)</span></button>
                                     <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="operasional"><span>Laporan Operasional (PDF)</span></button>
+                                    {{--
                                     <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="kas"><span>Laporan Arus Kas (xlsx)</span></button>
                                     <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="kas"><span>Laporan Arus Kas (PDF)</span></button>
                                     <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="calk"><span>Laporan Calk (xlsx)</span></button>
@@ -92,7 +93,7 @@
                                     <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="pengeluaran"><span>Laporan Kas Pengeluaran (xlsx)</span></button>
                                     <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="pengeluaran"><span>Laporan Kas Pengeluaran (PDF)</span></button>
                                     <button type="button" class="dropdown-item buttons-excel buttons-html5" data-tipe="periode"><span>Laporan Kas Harian (xlsx)</span></button>
-                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="periode"><span>Laporan Kas Harian (PDF)</span></button>
+                                    <button type="button" class="dropdown-item btn-pdf buttons-html5" data-tipe="periode"><span>Laporan Kas Harian (PDF)</span></button>--}}
                                 </div>
                         </div>
                     </div>
